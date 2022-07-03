@@ -1,5 +1,5 @@
 test:
-	go test .
+	go test -v .
 
-test-integration:
-	go test ./integration
+test-int:
+	go test -v ./integration

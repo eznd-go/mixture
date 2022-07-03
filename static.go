@@ -1,16 +1,14 @@
-package static
+package mixture
 
 import (
 	"fmt"
-	"github.com/ezn-go/mixture"
-
 	"github.com/go-gormigrate/gormigrate/v2"
 	"gorm.io/gorm"
 )
 
-var mx = mixture.New(nil)
+var mx = New(nil)
 
-func Add(e mixture.Envs, m *gormigrate.Migration) {
+func Add(e Envs, m *gormigrate.Migration) {
 	mx.Add(e, m)
 }
 
@@ -25,20 +23,20 @@ func Apply(db *gorm.DB, env string) error {
 		Apply(e)
 }
 
-func parseEnv(env string) (mixture.Envs, error) {
+func parseEnv(env string) (Envs, error) {
 	switch env {
 	case "local":
-		return mixture.ForLocal, nil
+		return ForLocal, nil
 	case "docker", "ci":
-		return mixture.ForDocker, nil
+		return ForDocker, nil
 	case "int", "integration":
-		return mixture.ForIntegration, nil
+		return ForIntegration, nil
 	case "prod", "production":
-		return mixture.ForProduction, nil
+		return ForProduction, nil
 	case "test":
-		return mixture.ForTest, nil
+		return ForTest, nil
 	case "sandbox":
-		return mixture.ForSandbox, nil
+		return ForSandbox, nil
 
 	}
 

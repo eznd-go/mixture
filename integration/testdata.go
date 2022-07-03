@@ -5,6 +5,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type User struct {
+	ID       int
+	Name     string `gorm:"unique;not null"`
+	Email    string
+	IsActive bool
+}
+
 func GetHappyPathTestMigrations() []gormigrate.Migration {
 	return []gormigrate.Migration{
 		{

@@ -1,32 +1,32 @@
 package integration_test
 
 import (
+	"github.com/ezn-go/mixture/integration"
 	"log"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/suite"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
 	"github.com/ezn-go/mixture"
-	"github.com/ezn-go/mixture/integration"
+	"github.com/stretchr/testify/suite"
 )
 
-type migrationTestSuite struct {
+type staticTestSuite struct {
 	suite.Suite
 	db *gorm.DB
 }
 
-func TestMigrationTestSuite(t *testing.T) {
-	suite.Run(t, &migrationTestSuite{})
+func TestStaticTestSuite(t *testing.T) {
+	suite.Run(t, &staticTestSuite{})
 }
 
-func (s *migrationTestSuite) SetupSuite()    {}
-func (s *migrationTestSuite) TearDownSuite() {}
-func (s *migrationTestSuite) SetupTest() {
+func (s *staticTestSuite) SetupSuite()    {}
+func (s *staticTestSuite) TearDownSuite() {}
+func (s *staticTestSuite) SetupTest() {
 	gormLog := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
@@ -40,15 +40,14 @@ func (s *migrationTestSuite) SetupTest() {
 		Logger: gormLog,
 	})
 }
-func (s *migrationTestSuite) TearDownTest() {}
+func (s *staticTestSuite) TearDownTest() {}
 
-func (s *migrationTestSuite) Test_Mixture_HappyPath() {
+func (s *staticTestSuite) Test_Mixture_HappyPath() {
 	migrations := integration.GetHappyPathTestMigrations()
-	mx := mixture.New(s.db)
 	for r := range migrations {
-		mx.Add(mixture.ForAnyEnv, &migrations[r])
+		mixture.Add(mixture.ForAnyEnv, &migrations[r])
 	}
-	err := mx.Apply(mixture.ForProduction)
+	err := mixture.Apply(s.db, "prod")
 	s.Assert().NoError(err)
 
 	var num int64
