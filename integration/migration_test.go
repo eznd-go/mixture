@@ -1,16 +1,18 @@
 package integration_test
 
 import (
-	"github.com/ezn-go/mixture"
-	sqlite2 "github.com/ezn-go/mixture/integration"
-	"github.com/stretchr/testify/suite"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 	"log"
 	"os"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/suite"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+
+	"github.com/ezn-go/mixture"
+	"github.com/ezn-go/mixture/integration"
 )
 
 type migrationTestSuite struct {
@@ -22,9 +24,9 @@ func TestMixtureTestSuite(t *testing.T) {
 	suite.Run(t, &migrationTestSuite{})
 }
 
-//func (s *migrationTestSuite) SetupSuite()    {}
+func (s *migrationTestSuite) SetupSuite()    {}
 func (s *migrationTestSuite) TearDownSuite() {}
-func (s *migrationTestSuite) SetupSuite() {
+func (s *migrationTestSuite) SetupTest() {
 	gormLog := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
@@ -48,7 +50,7 @@ type User struct {
 }
 
 func (s *migrationTestSuite) Test_Mixture_HappyPath() {
-	migrations := sqlite2.GetTestMigrations()
+	migrations := integration.GetHappyPathTestMigrations()
 	mx := mixture.New(s.db)
 	for r := range migrations {
 		mx.Add(mixture.ForAnyEnv, &migrations[r])

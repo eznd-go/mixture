@@ -1,14 +1,21 @@
 name: GitHub Actions Demo
 on: [push]
 jobs:
-  run-unit-tests:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - run: go build
+
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
       - run: go test .
 
-  run-integration-tests:
+  integration-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code

@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func GetTestMigrations() []gormigrate.Migration {
+func GetHappyPathTestMigrations() []gormigrate.Migration {
 	return []gormigrate.Migration{
 		{
 			ID: "20220307-001",
