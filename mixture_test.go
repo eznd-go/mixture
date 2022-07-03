@@ -9,7 +9,6 @@ import (
 
 func TestNewMixture(t *testing.T) {
 	type args struct {
-		c  config
 		db *gorm.DB
 	}
 	tests := []struct {
@@ -20,7 +19,6 @@ func TestNewMixture(t *testing.T) {
 		{
 			name: "Happy path",
 			args: args{
-				c:  config{},
 				db: nil,
 			},
 			want: &mixture{},
@@ -28,9 +26,9 @@ func TestNewMixture(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := NewMixture(tt.args.c, tt.args.db)
+			got := New(tt.args.db)
 			if reflect.DeepEqual(got.migrations, tt.want.migrations) {
-				t.Errorf("NewMixture() = %v, want %v", got, tt.want)
+				t.Errorf("New() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -39,11 +37,11 @@ func TestNewMixture(t *testing.T) {
 func Test_mixture_Add(t *testing.T) {
 	type fields struct {
 		migrations []migration
-		config     config
+		config     *Config
 		db         *gorm.DB
 	}
 	type args struct {
-		e   envs
+		e   Envs
 		mig []*gormigrate.Migration
 	}
 	tests := []struct {
@@ -84,15 +82,15 @@ func Test_mixture_Add(t *testing.T) {
 func Test_mixture_filter(t *testing.T) {
 	type fields struct {
 		migrations []migration
-		config     config
+		config     *Config
 		db         *gorm.DB
 	}
 	type migs struct {
-		e   envs
+		e   Envs
 		mig []*gormigrate.Migration
 	}
 	type args struct {
-		env  envs
+		env  Envs
 		migs []migs
 	}
 	tests := []struct {
@@ -105,7 +103,7 @@ func Test_mixture_filter(t *testing.T) {
 			name: "Adding simple migrations",
 			fields: fields{
 				migrations: nil,
-				config:     config{},
+				config:     &Config{},
 				db:         nil,
 			},
 			args: args{
@@ -128,10 +126,10 @@ func Test_mixture_filter(t *testing.T) {
 			},
 		},
 		{
-			name: "Mixing different envs",
+			name: "Mixing different Envs",
 			fields: fields{
 				migrations: nil,
-				config:     config{},
+				config:     &Config{},
 				db:         nil,
 			},
 			args: args{
@@ -176,7 +174,7 @@ func Test_mixture_filter(t *testing.T) {
 			name: "Empty result set",
 			fields: fields{
 				migrations: nil,
-				config:     config{},
+				config:     &Config{},
 				db:         nil,
 			},
 			args: args{

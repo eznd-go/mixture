@@ -5,7 +5,15 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewMixture(c config, db *gorm.DB) *mixture {
+func New(db *gorm.DB) *mixture {
+	return &mixture{
+		migrations: []migration{},
+		config:     &DefaultConfig,
+		db:         db,
+	}
+}
+
+func NewWithConfig(db *gorm.DB, c *Config) *mixture {
 	return &mixture{
 		migrations: []migration{},
 		config:     c,
@@ -13,7 +21,7 @@ func NewMixture(c config, db *gorm.DB) *mixture {
 	}
 }
 
-func (m *mixture) Add(e envs, mig *gormigrate.Migration) *mixture {
+func (m *mixture) Add(e Envs, mig *gormigrate.Migration) *mixture {
 	m.migrations = append(m.migrations, migration{
 		envs:      e,
 		migration: mig,
@@ -26,12 +34,12 @@ func (m *mixture) SetDB(db *gorm.DB) *mixture {
 	return m
 }
 
-func (m *mixture) Apply(env envs) error {
-	migrator := gormigrate.New(m.db, gormigrate.DefaultOptions, m.filter(env))
+func (m *mixture) Apply(destEnv Envs) error {
+	migrator := gormigrate.New(m.db, gormigrate.DefaultOptions, m.filter(destEnv))
 	return migrator.Migrate()
 }
 
-func (m *mixture) filter(env envs) []*gormigrate.Migration {
+func (m *mixture) filter(env Envs) []*gormigrate.Migration {
 	var t []*gormigrate.Migration
 
 	for _, r := range m.migrations {
