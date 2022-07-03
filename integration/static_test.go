@@ -1,7 +1,7 @@
 package integration_test
 
 import (
-	"github.com/ezn-go/mixture/integration"
+	"github.com/ezn-go/mixture/testdata"
 	"log"
 	"os"
 	"testing"
@@ -43,7 +43,7 @@ func (s *staticTestSuite) SetupTest() {
 func (s *staticTestSuite) TearDownTest() {}
 
 func (s *staticTestSuite) Test_Mixture_HappyPath() {
-	migrations := integration.GetHappyPathTestMigrations()
+	migrations := testdata.GetHappyPathTestMigrations()
 	for r := range migrations {
 		mixture.Add(mixture.ForAnyEnv, &migrations[r])
 	}
@@ -51,12 +51,12 @@ func (s *staticTestSuite) Test_Mixture_HappyPath() {
 	s.Assert().NoError(err)
 
 	var num int64
-	err = s.db.Model(integration.User{}).Count(&num).Error
+	err = s.db.Model(testdata.User20220101{}).Count(&num).Error
 	s.Assert().NoError(err)
 	s.Assert().Equal(int64(3), num)
 
-	var users []integration.User
-	err = s.db.Model(integration.User{}).Order("id asc").Find(&users).Error
+	var users []testdata.User20220101
+	err = s.db.Model(testdata.User20220101{}).Order("id asc").Find(&users).Error
 	s.Assert().NoError(err)
 	s.Assert().Equal(3, len(users))
 	s.Assert().Equal(1, users[0].ID)
