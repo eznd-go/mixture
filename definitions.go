@@ -5,10 +5,10 @@ import (
 	"gorm.io/gorm"
 )
 
-type envs int
+type Envs int
 
 const (
-	ForAnyEnv envs = 1 << iota
+	ForAnyEnv Envs = 1 << iota
 	ForLocal
 	ForDocker
 	ForIntegration
@@ -17,23 +17,23 @@ const (
 	ForSandbox
 )
 
-var DefaultOptions = config{
+var DefaultConfig = Config{
 	AllowedEnvironments:      ForAnyEnv,
 	FailOnUnknownEnvironment: true,
 }
 
 type migration struct {
 	migration *gormigrate.Migration
-	envs      envs
+	envs      Envs
 }
 
-type config struct {
-	AllowedEnvironments      envs
+type Config struct {
+	AllowedEnvironments      Envs
 	FailOnUnknownEnvironment bool
 }
 
 type mixture struct {
 	migrations []migration
-	config     config
+	config     *Config
 	db         *gorm.DB
 }

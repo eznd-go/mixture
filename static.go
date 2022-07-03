@@ -2,14 +2,13 @@ package mixture
 
 import (
 	"fmt"
-
 	"github.com/go-gormigrate/gormigrate/v2"
 	"gorm.io/gorm"
 )
 
-var mx = NewMixture(DefaultOptions, nil)
+var mx = New(nil)
 
-func Add(e envs, m *gormigrate.Migration) {
+func Add(e Envs, m *gormigrate.Migration) {
 	mx.Add(e, m)
 }
 
@@ -24,7 +23,7 @@ func Apply(db *gorm.DB, env string) error {
 		Apply(e)
 }
 
-func parseEnv(env string) (envs, error) {
+func parseEnv(env string) (Envs, error) {
 	switch env {
 	case "local":
 		return ForLocal, nil
@@ -41,5 +40,5 @@ func parseEnv(env string) (envs, error) {
 
 	}
 
-	return 0, fmt.Errorf("failed to parse env %s", env)
+	return 0, fmt.Errorf("failed to parse env: %s", env)
 }
