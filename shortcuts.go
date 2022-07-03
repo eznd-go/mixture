@@ -7,28 +7,47 @@ import (
 	"reflect"
 )
 
-func CreateTable(t interface{}) gormigrate.MigrateFunc {
+type Func = func(tx *gorm.DB) error
+
+func createTable(t interface{}) Func {
 	return func(tx *gorm.DB) error {
 		return tx.Migrator().CreateTable(t)
 	}
 }
 
-func DropTable(t interface{}) gormigrate.RollbackFunc {
+func CreateTableM(t interface{}) gormigrate.MigrateFunc {
+	return createTable(t)
+}
+
+func CreateTableR(t interface{}) gormigrate.RollbackFunc {
+	return createTable(t)
+}
+
+func dropTable(t interface{}) Func {
 	return func(tx *gorm.DB) error {
 		return tx.Migrator().DropTable(t)
 	}
 }
 
-// CreateBatch imports slice of structs into DB, may have lots of limitations
+func DropTableM(t interface{}) gormigrate.MigrateFunc {
+	return dropTable(t)
+}
+
+func DropTableR(t interface{}) gormigrate.RollbackFunc {
+	return dropTable(t)
+}
+
+// CreateBatchM imports slice of structs into DB, may have lots of limitations
 // I realize, that playing with reflect is not the best performance trick
 // But, since migrations are not expected to be used in high-loaded code,
 // I believe that syntax sugar and readability >> speed here
-func CreateBatch(b interface{}) gormigrate.MigrateFunc {
-	t := reflect.TypeOf(b)
-	if t.Kind() != reflect.Slice {
-		panic("CreateBatch: input is not a slice")
-	}
+func createBatch(b interface{}) func(tx *gorm.DB) error {
 	return func(tx *gorm.DB) error {
+		t := reflect.TypeOf(b)
+		if t.Kind() != reflect.Slice {
+			panic("CreateBatch: input is not a slice")
+		}
+
 		s := reflect.ValueOf(b)
 		for i := 0; i < s.Len(); i++ {
 			tt := s.Index(i).Type()
@@ -58,7 +77,15 @@ func CreateBatch(b interface{}) gormigrate.MigrateFunc {
 	}
 }
 
-func DeleteBatch(b interface{}) gormigrate.RollbackFunc {
+func CreateBatchM(b interface{}) gormigrate.MigrateFunc {
+	return createBatch(b)
+}
+
+func CreateBatchR(b interface{}) gormigrate.RollbackFunc {
+	return createBatch(b)
+}
+
+func deleteBatch(b interface{}) func(tx *gorm.DB) error {
 	t := reflect.TypeOf(b)
 	if t.Kind() != reflect.Slice {
 		panic("CreateBatch: input is not a slice")
@@ -78,14 +105,19 @@ func DeleteBatch(b interface{}) gormigrate.RollbackFunc {
 			}
 			tn := tns[0].String()
 
-			vv := make(map[string]interface{})
+			found := false
 			for j := 0; j < s.Index(i).NumField(); j++ {
-				vv[strcase.ToSnake(tt.Field(j).Name)] = s.Index(i).Field(j).Interface()
+				if strcase.ToSnake(tt.Field(j).Name) == "id" {
+					err := tx.Table(tn).Where("id = ?", s.Index(i).Field(j).Interface()).Delete(s.Index(i).Field(j).Type()).Error
+					if err != nil {
+						return err
+					}
+					found = true
+				}
 			}
 
-			err := tx.Table(tn).Delete(vv).Error
-			if err != nil {
-				return err
+			if !found {
+				panic("DeleteBatch: input does not have id column")
 			}
 		}
 
@@ -93,14 +125,24 @@ func DeleteBatch(b interface{}) gormigrate.RollbackFunc {
 	}
 }
 
-func Update(table, where, column, value string) gormigrate.MigrateFunc {
+func DeleteBatchM(b interface{}) gormigrate.MigrateFunc {
+	return deleteBatch(b)
+}
+
+func DeleteBatchR(b interface{}) gormigrate.RollbackFunc {
+	return deleteBatch(b)
+}
+
+func update(table, where, column, value string) Func {
 	return func(tx *gorm.DB) error {
 		return tx.Table(table).Where(where).Update(column, value).Error
 	}
 }
 
-func RollbackUpdate(table, where, column, value string) gormigrate.RollbackFunc {
-	return func(tx *gorm.DB) error {
-		return tx.Table(table).Where(where).Update(column, value).Error
-	}
+func UpdateM(table, where, column, value string) gormigrate.MigrateFunc {
+	return update(table, where, column, value)
+}
+
+func UpdateR(table, where, column, value string) gormigrate.RollbackFunc {
+	return update(table, where, column, value)
 }

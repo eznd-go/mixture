@@ -37,14 +37,24 @@ func (s User20220102) TableName() string {
 func GetHappyPathTestMigrations() []gormigrate.Migration {
 	return []gormigrate.Migration{
 		{
-			ID:       "20220307-001",
-			Migrate:  mixture.CreateTable(&User20220101{}),
-			Rollback: mixture.DropTable(&User20220101{}),
+			ID:       "20220101-001",
+			Migrate:  mixture.CreateTableM(&User20220101{}),
+			Rollback: mixture.DropTableR(&User20220101{}),
 		},
 		{
-			ID:       "20220307-002",
-			Migrate:  mixture.CreateBatch(users20220101),
-			Rollback: mixture.DeleteBatch(users20220101),
+			ID:       "20220101-002",
+			Migrate:  mixture.CreateBatchM(users20220101),
+			Rollback: mixture.DeleteBatchR(users20220101),
+		},
+	}
+}
+
+func GetRollbackHappyPathTestMigrations() []gormigrate.Migration {
+	return []gormigrate.Migration{
+		{
+			ID:       "20220102-001",
+			Migrate:  mixture.DeleteBatchM(users20220101),
+			Rollback: mixture.CreateBatchR(users20220101),
 		},
 	}
 }

@@ -4,6 +4,8 @@ go 1.17
 
 require (
 	github.com/go-gormigrate/gormigrate/v2 v2.0.0
+	github.com/iancoleman/strcase v0.2.0
+	github.com/pkg/errors v0.8.1
 	github.com/stretchr/testify v1.5.1
 	gorm.io/driver/sqlite v1.1.1
 	gorm.io/gorm v1.20.2
@@ -11,7 +13,6 @@ require (
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/iancoleman/strcase v0.2.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.1 // indirect
 	github.com/mattn/go-sqlite3 v1.14.0 // indirect

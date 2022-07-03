@@ -2,6 +2,7 @@ package mixture
 
 import (
 	"github.com/go-gormigrate/gormigrate/v2"
+	"github.com/pkg/errors"
 	"gorm.io/gorm"
 )
 
@@ -36,7 +37,7 @@ func (m *mixture) SetDB(db *gorm.DB) *mixture {
 
 func (m *mixture) Apply(destEnv Envs) error {
 	migrator := gormigrate.New(m.db, gormigrate.DefaultOptions, m.filter(destEnv))
-	return migrator.Migrate()
+	return errors.WithStack(migrator.Migrate())
 }
 
 func (m *mixture) filter(env Envs) []*gormigrate.Migration {
