@@ -34,13 +34,18 @@ func (s User20220102) TableName() string {
 	return "users"
 }
 
-func GetBaseMigrations() []gormigrate.Migration {
+func CreateTable() []gormigrate.Migration {
 	return []gormigrate.Migration{
 		{
 			ID:       "20220101-001",
 			Migrate:  mixture.CreateTableM(&User20220101{}),
 			Rollback: mixture.DropTableR(&User20220101{}),
 		},
+	}
+}
+
+func CreateBatch() []gormigrate.Migration {
+	return []gormigrate.Migration{
 		{
 			ID:       "20220101-002",
 			Migrate:  mixture.CreateBatchM(users20220101),
@@ -49,12 +54,32 @@ func GetBaseMigrations() []gormigrate.Migration {
 	}
 }
 
-func GetDeleteBatchMigrations() []gormigrate.Migration {
+func DeleteBatch() []gormigrate.Migration {
 	return []gormigrate.Migration{
 		{
-			ID:       "20220102-001",
+			ID:       "20220101-003",
 			Migrate:  mixture.DeleteBatchM(users20220101),
 			Rollback: mixture.CreateBatchR(users20220101),
+		},
+	}
+}
+
+func DropTable() []gormigrate.Migration {
+	return []gormigrate.Migration{
+		{
+			ID:       "20220101-004",
+			Migrate:  mixture.DropTableM(users20220101[0]),
+			Rollback: mixture.CreateBatchR(users20220101[0]),
+		},
+	}
+}
+
+func Update() []gormigrate.Migration {
+	return []gormigrate.Migration{
+		{
+			ID:       "20220101-005",
+			Migrate:  mixture.UpdateM("users", "id = 1", "name", "QWERTY1"),
+			Rollback: mixture.UpdateR("users", "id = 1", "name", "John Doe"),
 		},
 	}
 }
