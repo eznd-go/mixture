@@ -146,3 +146,17 @@ func UpdateM(table, where, column, value string) gormigrate.MigrateFunc {
 func UpdateR(table, where, column, value string) gormigrate.RollbackFunc {
 	return update(table, where, column, value)
 }
+
+func delete(table, where string) Func {
+	return func(tx *gorm.DB) error {
+		return tx.Table(table).Delete(where).Error
+	}
+}
+
+func DeleteM(table, where string) gormigrate.MigrateFunc {
+	return delete(table, where)
+}
+
+func DeleteR(table, where string) gormigrate.RollbackFunc {
+	return delete(table, where)
+}

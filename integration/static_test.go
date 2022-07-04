@@ -43,7 +43,7 @@ func (s *staticTestSuite) SetupTest() {
 func (s *staticTestSuite) TearDownTest() {}
 
 func (s *staticTestSuite) Test_Mixture_HappyPath() {
-	migrations := testdata.GetHappyPathTestMigrations()
+	migrations := testdata.GetBaseMigrations()
 	for r := range migrations {
 		mixture.Add(mixture.ForAnyEnv, &migrations[r])
 	}

@@ -48,8 +48,8 @@ func (s *migrationTestSuite) AfterTest(suite, test string) {
 	}
 }
 
-func (s *migrationTestSuite) Test_Mixture_HappyPath() {
-	migrations := testdata.GetHappyPathTestMigrations()
+func (s *migrationTestSuite) Test_CreateBatch() {
+	migrations := testdata.GetBaseMigrations()
 	mx := mixture.New(s.db)
 	for r := range migrations {
 		mx.Add(mixture.ForAnyEnv, &migrations[r])
@@ -69,9 +69,9 @@ func (s *migrationTestSuite) Test_Mixture_HappyPath() {
 	s.Assert().Equal(1, users[0].ID)
 }
 
-func (s *migrationTestSuite) Test_Mixture_DeleteBatch() {
+func (s *migrationTestSuite) Test_DeleteBatch() {
 	mx := mixture.New(s.db)
-	migrations1 := testdata.GetHappyPathTestMigrations()
+	migrations1 := testdata.GetBaseMigrations()
 	for r := range migrations1 {
 		mx.Add(mixture.ForAnyEnv, &migrations1[r])
 	}
@@ -88,8 +88,10 @@ func (s *migrationTestSuite) Test_Mixture_DeleteBatch() {
 	s.Assert().NoError(err)
 	s.Assert().Equal(3, len(users))
 	s.Assert().Equal(1, users[0].ID)
+	s.Assert().Equal(2, users[1].ID)
+	s.Assert().Equal(3, users[2].ID)
 
-	migrations2 := testdata.GetRollbackHappyPathTestMigrations()
+	migrations2 := testdata.GetDeleteBatchMigrations()
 	for r := range migrations2 {
 		mx.Add(mixture.ForAnyEnv, &migrations2[r])
 	}

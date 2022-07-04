@@ -34,7 +34,7 @@ func (s User20220102) TableName() string {
 	return "users"
 }
 
-func GetHappyPathTestMigrations() []gormigrate.Migration {
+func GetBaseMigrations() []gormigrate.Migration {
 	return []gormigrate.Migration{
 		{
 			ID:       "20220101-001",
@@ -49,7 +49,7 @@ func GetHappyPathTestMigrations() []gormigrate.Migration {
 	}
 }
 
-func GetRollbackHappyPathTestMigrations() []gormigrate.Migration {
+func GetDeleteBatchMigrations() []gormigrate.Migration {
 	return []gormigrate.Migration{
 		{
 			ID:       "20220102-001",
