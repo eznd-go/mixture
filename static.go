@@ -2,13 +2,12 @@ package mixture
 
 import (
 	"fmt"
-	"github.com/go-gormigrate/gormigrate/v2"
 	"gorm.io/gorm"
 )
 
 var mx = New(nil)
 
-func Add(e Envs, m *gormigrate.Migration) {
+func Add(e Envs, m *M) {
 	mx.Add(e, m)
 }
 

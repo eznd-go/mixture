@@ -4,20 +4,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: сheckout
         uses: actions/checkout@v3
       - run: go build
 
   unit-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: сheckout
         uses: actions/checkout@v3
       - run: make test
 
   integration-tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
+      - name: сheckout
         uses: actions/checkout@v3
       - run: make test-int
