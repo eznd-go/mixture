@@ -6,6 +6,16 @@ import (
 	"gorm.io/gorm"
 )
 
+type M gormigrate.Migration
+
+func (m *M) ToGormMigration() *gormigrate.Migration {
+	return &gormigrate.Migration{
+		ID:       m.ID,
+		Migrate:  m.Migrate,
+		Rollback: m.Rollback,
+	}
+}
+
 func New(db *gorm.DB) *mixture {
 	return &mixture{
 		migrations: []migration{},
@@ -22,10 +32,10 @@ func NewWithConfig(db *gorm.DB, c *Config) *mixture {
 	}
 }
 
-func (m *mixture) Add(e Envs, mig *gormigrate.Migration) *mixture {
+func (m *mixture) Add(e Envs, mig *M) *mixture {
 	m.migrations = append(m.migrations, migration{
 		envs:      e,
-		migration: mig,
+		migration: mig.ToGormMigration(),
 	})
 	return m
 }

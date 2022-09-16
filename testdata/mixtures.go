@@ -2,7 +2,6 @@ package testdata
 
 import (
 	"github.com/ezn-go/mixture"
-	"github.com/go-gormigrate/gormigrate/v2"
 )
 
 type User20220101 struct {
@@ -34,8 +33,8 @@ func (s User20220102) TableName() string {
 	return "users"
 }
 
-func CreateTable() []gormigrate.Migration {
-	return []gormigrate.Migration{
+func CreateTable() []mixture.M {
+	return []mixture.M{
 		{
 			ID:       "20220101-001",
 			Migrate:  mixture.CreateTableM(&User20220101{}),
@@ -44,8 +43,8 @@ func CreateTable() []gormigrate.Migration {
 	}
 }
 
-func CreateBatch() []gormigrate.Migration {
-	return []gormigrate.Migration{
+func CreateBatch() []mixture.M {
+	return []mixture.M{
 		{
 			ID:       "20220101-002",
 			Migrate:  mixture.CreateBatchM(users20220101),
@@ -54,8 +53,8 @@ func CreateBatch() []gormigrate.Migration {
 	}
 }
 
-func DeleteBatch() []gormigrate.Migration {
-	return []gormigrate.Migration{
+func DeleteBatch() []mixture.M {
+	return []mixture.M{
 		{
 			ID:       "20220101-003",
 			Migrate:  mixture.DeleteBatchM(users20220101),
@@ -64,8 +63,8 @@ func DeleteBatch() []gormigrate.Migration {
 	}
 }
 
-func DropTable() []gormigrate.Migration {
-	return []gormigrate.Migration{
+func DropTable() []mixture.M {
+	return []mixture.M{
 		{
 			ID:       "20220101-004",
 			Migrate:  mixture.DropTableM(users20220101[0]),
@@ -74,12 +73,22 @@ func DropTable() []gormigrate.Migration {
 	}
 }
 
-func Update() []gormigrate.Migration {
-	return []gormigrate.Migration{
+func Update() []mixture.M {
+	return []mixture.M{
 		{
 			ID:       "20220101-005",
 			Migrate:  mixture.UpdateM("users", "id = 1", "name", "QWERTY1"),
 			Rollback: mixture.UpdateR("users", "id = 1", "name", "John Doe"),
+		},
+	}
+}
+
+func Delete() []mixture.M {
+	return []mixture.M{
+		{
+			ID:       "20220101-006",
+			Migrate:  mixture.DeleteM("users", "id = ?", 1),
+			Rollback: mixture.CreateBatchR([]User20220101{users20220101[0]}),
 		},
 	}
 }

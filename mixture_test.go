@@ -42,7 +42,7 @@ func Test_mixture_Add(t *testing.T) {
 	}
 	type args struct {
 		e   Envs
-		mig []*gormigrate.Migration
+		mig []*M
 	}
 	tests := []struct {
 		name   string
@@ -54,7 +54,7 @@ func Test_mixture_Add(t *testing.T) {
 			name: "Happy path",
 			args: args{
 				e: 0,
-				mig: []*gormigrate.Migration{
+				mig: []*M{
 					{ID: "1"},
 					{ID: "2"},
 					{ID: "3"},
@@ -87,7 +87,7 @@ func Test_mixture_filter(t *testing.T) {
 	}
 	type migs struct {
 		e   Envs
-		mig []*gormigrate.Migration
+		mig []*M
 	}
 	type args struct {
 		env  Envs
@@ -111,7 +111,7 @@ func Test_mixture_filter(t *testing.T) {
 				migs: []migs{
 					{
 						e: ForAnyEnv,
-						mig: []*gormigrate.Migration{
+						mig: []*M{
 							{ID: "0001"},
 							{ID: "0002"},
 							{ID: "0003"},
@@ -137,7 +137,7 @@ func Test_mixture_filter(t *testing.T) {
 				migs: []migs{
 					{
 						e: ForProduction,
-						mig: []*gormigrate.Migration{
+						mig: []*M{
 							{ID: "0001"},
 							{ID: "0002"},
 							{ID: "0003"},
@@ -145,7 +145,7 @@ func Test_mixture_filter(t *testing.T) {
 					},
 					{
 						e: ForIntegration,
-						mig: []*gormigrate.Migration{
+						mig: []*M{
 							{ID: "0004"},
 							{ID: "0005"},
 							{ID: "0006"},
@@ -153,7 +153,7 @@ func Test_mixture_filter(t *testing.T) {
 					},
 					{
 						e: ForAnyEnv,
-						mig: []*gormigrate.Migration{
+						mig: []*M{
 							{ID: "0007"},
 							{ID: "0008"},
 							{ID: "0009"},
@@ -182,7 +182,7 @@ func Test_mixture_filter(t *testing.T) {
 				migs: []migs{
 					{
 						e: ForProduction,
-						mig: []*gormigrate.Migration{
+						mig: []*M{
 							{ID: "0001"},
 							{ID: "0002"},
 							{ID: "0003"},
@@ -190,7 +190,7 @@ func Test_mixture_filter(t *testing.T) {
 					},
 					{
 						e: ForIntegration,
-						mig: []*gormigrate.Migration{
+						mig: []*M{
 							{ID: "0004"},
 							{ID: "0005"},
 							{ID: "0006"},
@@ -198,7 +198,7 @@ func Test_mixture_filter(t *testing.T) {
 					},
 					{
 						e: ForDocker,
-						mig: []*gormigrate.Migration{
+						mig: []*M{
 							{ID: "0007"},
 							{ID: "0008"},
 							{ID: "0009"},

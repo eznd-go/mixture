@@ -31,8 +31,8 @@ func (s *migrationTestSuite) BeforeTest(suite, test string) {
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
 			SlowThreshold: time.Second,
-			LogLevel:      logger.Silent,
-			//LogLevel: logger.Info,
+			//LogLevel:      logger.Silent,
+			LogLevel: logger.Info,
 			Colorful: false,
 		},
 	)
@@ -150,4 +150,24 @@ func (s *migrationTestSuite) Test_Update() {
 	err = s.db.Model(testdata.User20220101{}).Order("id asc").First(&user).Error
 	s.Assert().NoError(err)
 	s.Assert().Equal("QWERTY1", user.Name)
+}
+
+func (s *migrationTestSuite) Test_Delete() {
+	migrations := append(append(testdata.CreateTable(), testdata.CreateBatch()...), testdata.Delete()...)
+	mx := mixture.New(s.db)
+	for r := range migrations {
+		mx.Add(mixture.ForAnyEnv, &migrations[r])
+	}
+	err := mx.Apply(mixture.ForProduction)
+	s.Assert().NoError(err)
+
+	var num int64
+	err = s.db.Model(testdata.User20220101{}).Count(&num).Error
+	s.Assert().NoError(err)
+	s.Assert().Equal(int64(2), num)
+
+	var user testdata.User20220101
+	err = s.db.Model(testdata.User20220101{}).Order("id asc").First(&user).Error
+	s.Assert().NoError(err)
+	s.Assert().Equal("John Smith", user.Name)
 }
