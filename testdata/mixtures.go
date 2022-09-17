@@ -1,7 +1,7 @@
 package testdata
 
 import (
-	"github.com/ezn-go/mixture"
+	"github.com/eznd-go/mixture"
 )
 
 type User20220101 struct {

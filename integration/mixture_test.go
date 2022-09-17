@@ -1,7 +1,6 @@
 package integration_test
 
 import (
-	"github.com/ezn-go/mixture/testdata"
 	"log"
 	"os"
 	"testing"
@@ -12,7 +11,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"github.com/ezn-go/mixture"
+	"github.com/eznd-go/mixture"
+	"github.com/eznd-go/mixture/testdata"
 )
 
 type migrationTestSuite struct {
