@@ -1,18 +1,18 @@
 package integration_test
 
 import (
-	"github.com/ezn-go/mixture/testdata"
 	"log"
 	"os"
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/suite"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"github.com/ezn-go/mixture"
-	"github.com/stretchr/testify/suite"
+	"github.com/eznd-go/mixture"
+	"github.com/eznd-go/mixture/testdata"
 )
 
 type staticTestSuite struct {
