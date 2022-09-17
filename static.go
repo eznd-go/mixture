@@ -22,6 +22,17 @@ func Apply(db *gorm.DB, env string) error {
 		Apply(e)
 }
 
+func ApplyVerbose(db *gorm.DB, env string) error {
+	e, err := parseEnv(env)
+	if err != nil {
+		return err
+	}
+
+	return mx.
+		SetDB(db).
+		ApplyVerbose(e)
+}
+
 func parseEnv(env string) (Envs, error) {
 	switch env {
 	case "local":

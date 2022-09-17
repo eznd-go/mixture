@@ -1,6 +1,7 @@
 package mixture
 
 import (
+	"fmt"
 	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/pkg/errors"
 	"gorm.io/gorm"
@@ -48,6 +49,27 @@ func (m *mixture) SetDB(db *gorm.DB) *mixture {
 func (m *mixture) Apply(destEnv Envs) error {
 	migrator := gormigrate.New(m.db, gormigrate.DefaultOptions, m.filter(destEnv))
 	return errors.WithStack(migrator.Migrate())
+}
+
+func (m *mixture) ApplyVerbose(destEnv Envs) error {
+	migrations := m.filter(destEnv)
+	fmt.Printf("applying %s%d%s migrations...\n", Cyan, len(migrations), Reset)
+	for _, migration := range migrations {
+		migrationset := make([]*gormigrate.Migration, 0)
+		migrationset = append(migrationset, migration)
+
+		fmt.Printf("  %s‣%s %s... ", Yellow, Reset, migration.ID)
+
+		err := gormigrate.New(m.db, gormigrate.DefaultOptions, migrationset).Migrate()
+		if err != nil {
+			fmt.Printf("%sFAIL:%s %v\n", Red, Reset, err)
+			return errors.WithStack(err)
+		}
+
+		fmt.Printf("%sok%s\n", Green, Reset)
+	}
+	fmt.Printf("%s✔%s migrations applied\n", Green, Reset)
+	return nil
 }
 
 func (m *mixture) filter(env Envs) []*gormigrate.Migration {
