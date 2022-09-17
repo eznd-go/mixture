@@ -1,4 +1,4 @@
-module github.com/ezn-go/mixture
+module github.com/eznd-go/mixture
 
 go 1.17
 
